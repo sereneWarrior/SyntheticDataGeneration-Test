@@ -18,7 +18,6 @@ public class PoolController : ScriptableObject
         {
             _poolDictionary[label] = new Queue<GameObject>();
         }
-        Debug.Log(_poolDictionary.Count);
    }
 
    public GameObject GetFromPool(KeyValuePair<string, GameObject> objectToSpawn)
