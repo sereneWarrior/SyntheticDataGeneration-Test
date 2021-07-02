@@ -10,42 +10,34 @@ public class SceneController : MonoBehaviour
     public GameObject[] prefabs;
     public int maxObjectsPerFrame;
 
-    private PoolController _pool;
-    private Dictionary<string, GameObject> _objs;
-    private Shape[] _activeObjects;
-    private Dictionary<string, LinkedPool<GameObject>> d;
+    private LabeledObject[] _activeObjects;
+    private Dictionary<string, LinkedPool<GameObject>> _pools;
 
-    //private ObjectPool<GameObject> _pool;
-    // Start is called before the first frame update
     void Start()
     {
-       // _objs = prefabs.ToDictionary(p => LayerMask.LayerToName(p.layer), p=> p );
-        //_pool = new PoolController(_objs);
-        _activeObjects = new Shape[maxObjectsPerFrame];
-        d = new Dictionary<string, LinkedPool<GameObject>>();
-        foreach (var p in prefabs)
+        _activeObjects = new LabeledObject[maxObjectsPerFrame];
+        _pools = new Dictionary<string, LinkedPool<GameObject>>();
+        foreach (var prefab in prefabs)
         {
-            d.Add(LayerMask.LayerToName(p.layer), 
-                new LinkedPool<GameObject>(createFunc: () => Instantiate(p),
-                actionOnGet: (g) => PoolHelper.OnActionGet(g),// set activ, settransform etc
-                actionOnRelease: (g) => PoolHelper.OnActionRelease(g),
+            _pools.Add(LayerMask.LayerToName(prefab.layer), 
+                new LinkedPool<GameObject>(createFunc: () => Instantiate(prefab),
+                actionOnGet: g => g.OnActionGet(),
+                actionOnRelease: g => g.OnActionRelease(),
                 actionOnDestroy: g => Destroy(g),
                 collectionCheck: false,
-                maxSize: 10));
-                
+                maxSize: maxObjectsPerFrame)); 
         }
         
         GenerateObjects();
     }
 
-    // Update is called once per frame
     void Update()
     {
         synth.OnSceneChange();
+        // TODO: Find better solution to release all spawned object
         foreach (var obj in _activeObjects){
-            d[obj.Label].Release(obj.Object);
+            _pools[obj.Label].Release(obj.Object);
         }
-        //activeObjects.Clear;
         GenerateObjects();
     }
 
@@ -53,31 +45,12 @@ public class SceneController : MonoBehaviour
     {
         for (var i= 0; i < maxObjectsPerFrame; i++)
         {
-            var rnd = Random.Range(0,3);
-            var newObj = d.ElementAt(rnd).Value.Get();
-            _activeObjects[i] = new Shape{
-                Label = d.ElementAt(rnd).Key,
+            var rnd = Random.Range(0,prefabs.Length-1);
+            var newObj = _pools.ElementAt(rnd).Value.Get();
+            _activeObjects[i] = new LabeledObject{
+                Label = _pools.ElementAt(rnd).Key,
                 Object = newObj
             };
         }
-       /* for (var i= 0; i < maxObjectsPerFrame; i++)
-        {
-            var obj = _pool.GetFromPool(_objs.ElementAt(Random.Range(0,3)));
-            var randomPosition = new Vector3(
-                Random.Range(-11, 11),
-                Random.Range(5, 11),
-                Random.Range(11, -11)
-            ); 
-
-            obj.transform.position = randomPosition;
-            obj.transform.rotation = Random.rotation;
-            obj.GetComponent<Renderer>().material.color = Random.ColorHSV();
-            var scale = Random.Range(-3, 3);
-            obj.transform.localScale +=  new Vector3(
-                scale,
-                scale,
-                scale
-            );
-        }*/
     }
 }

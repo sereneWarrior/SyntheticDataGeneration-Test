@@ -4,11 +4,11 @@ using UnityEngine;
 
 public static class PoolHelper
 {
-   public static void OnActionGet(GameObject gameObject)
+   public static void OnActionGet(this GameObject gameObject)
    {
         var randomPosition = new Vector3(
                 Random.Range(-11, 11),
-                Random.Range(50, 110),
+                Random.Range(5, 11),
                 Random.Range(11, -11)
             ); 
 
@@ -24,7 +24,7 @@ public static class PoolHelper
        gameObject.SetActive(true);
    }
 
-    public static void OnActionRelease(GameObject gameObject)
+    public static void OnActionRelease(this GameObject gameObject)
     {
         gameObject.transform.position = Vector3.zero;
         gameObject.transform.localScale = Vector3.zero;
