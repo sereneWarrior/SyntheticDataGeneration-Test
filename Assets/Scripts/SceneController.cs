@@ -12,6 +12,7 @@ public class SceneController : MonoBehaviour
 
     private LabeledObject[] _activeObjects;
     private Dictionary<string, LinkedPool<GameObject>> _pools;
+    private int _frameCount = 0;
 
     void Start()
     {
@@ -29,6 +30,12 @@ public class SceneController : MonoBehaviour
         }
         GenerateObjects();
         StartCoroutine("WaitBeforeGeneration");
+    }
+
+    void Update()
+    {
+        var fileName = $"image_{_frameCount++}";
+        synth.Save($"{fileName}", 512, 512, "Generated Images");
     }
 
     IEnumerator WaitBeforeGeneration()
