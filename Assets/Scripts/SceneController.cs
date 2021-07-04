@@ -27,25 +27,29 @@ public class SceneController : MonoBehaviour
                 collectionCheck: false,
                 maxSize: maxObjectsPerFrame)); 
         }
-        
         GenerateObjects();
+        StartCoroutine("WaitBeforeGeneration");
     }
 
-    void Update()
+    IEnumerator WaitBeforeGeneration()
     {
-        synth.OnSceneChange();
-        // TODO: Find better solution to release all spawned object
-        foreach (var obj in _activeObjects){
-            _pools[obj.Label].Release(obj.Object);
+        for(;;)
+        {
+            yield return new WaitForSeconds(2f);
+            synth.OnSceneChange();
+            // TODO: Find better solution to release all spawned object
+            foreach (var obj in _activeObjects){
+                _pools[obj.Label].Release(obj.Object);
+            }
+            GenerateObjects();
         }
-        GenerateObjects();
     }
 
     private void GenerateObjects()
     {
         for (var i= 0; i < maxObjectsPerFrame; i++)
         {
-            var rnd = Random.Range(0,prefabs.Length-1);
+            var rnd = Random.Range(0,prefabs.Length);
             var newObj = _pools.ElementAt(rnd).Value.Get();
             _activeObjects[i] = new LabeledObject{
                 Label = _pools.ElementAt(rnd).Key,
