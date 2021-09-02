@@ -18,6 +18,20 @@ They are generated randomly, with varying color, size, rotation and location.
 
 The one used in this project is a `LinkedPool<T>` because the number of generated object of each group is random. An `ObjectPool<T>` would need to have the size the amount of objects to spawn, since in worst case only objects from one group could be spawned. That would lead to unnecessary occupied memory.
 
+## Results
+
+|![depth](images/image_0_depth.png)||![flow](images/image_0_flow.png)||
+|:-:|:--:|:-:|:-:|
+|Depth|| Optical flow ||
+
+|![id](images/image_0_id.png)||![image](images/image_0_img.png)||
+|:-:|:--:|:-:|:-:|
+|Category|| Normal image ||
+
+|![layer](images/image_0_layer.png)||![normals](images/image_0_normals.png)||
+|:-:|:--:|:-:|:-:|
+ |Labels / layers.|| Normal map ||
+
 ## Sources
 - This software uses Unity ML-ImageSynthsis - see ImageSynthesis-Library.txt.
 - Generating Synthetic Data for Image Segmentation with Unity and PyTorch/fastai - https://www.youtube.com/watch?v=P4CCMvtUohA
